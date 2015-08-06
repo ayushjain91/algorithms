@@ -1,6 +1,6 @@
 import random
 
-def selection(arr, idx, lo = 0, hi = None):
+def selection(arr, idx, lo = 0, hi = None, key = lambda x:x):
 #   Returns the idx-th order element in arr[lo] to arr[hi]
 #   Complexity: O(n) on average
     if hi == None:
@@ -14,7 +14,7 @@ def selection(arr, idx, lo = 0, hi = None):
     pivot = arr[lo]
     i = lo + 1
     for j in range(lo+1,hi+1):
-        if arr[j]<=pivot:
+        if key(arr[j])<=key(pivot):
             arr[i], arr[j] = arr[j], arr[i]
             i += 1
     arr[lo], arr[i-1] = arr[i-1], arr[lo]
@@ -25,31 +25,33 @@ def selection(arr, idx, lo = 0, hi = None):
     else:
         return selection(arr, idx, lo, i-1)
     
-def quickSort(arr, lo = 0, hi = None, order = 'ascending'):
+def quickSort(arr, lo = 0, hi = None, order = 'ascending', key = lambda x:x):
+#   Sorts the array arr in-place using quicksort
+#   Runtime: O(n*log(n)) on average
     if hi == None:
         hi = len(arr) - 1
-    _quickSort(arr, lo, hi)
+    _quickSort(arr, lo, hi, key)
     if order == 'descending':
         arr.reverse()
     
-def _quickSort(arr, lo = 0, hi = None):
+def _quickSort(arr, lo = 0, hi = None, key = lambda x:x):
 #   Sorts the array arr in-place using quicksort
 #   Runtime: O(n*log(n)) on average
     if hi<=lo:
         return
     r = random.randint(lo, hi)
     arr[lo], arr[r] = arr[r], arr[lo]
-    pivot = arr[lo]
+    pivot = key(arr[lo])
     i = lo + 1
     for j in range(lo+1,hi+1):
-        if arr[j]<=pivot:
+        if key(arr[j])<=pivot:
             arr[i], arr[j] = arr[j], arr[i]
             i += 1
     arr[lo], arr[i-1] = arr[i-1], arr[lo]
     _quickSort(arr, lo, i-2)
     _quickSort(arr, i, hi)
 
-def mergeSort(arr, start = 0, end = None, sort = 'ascending'):
+def mergeSort(arr, start = 0, end = None, sort = 'ascending', key = lambda x:x):
 #   Sorts the array arr using mergesort - arr is modified
 #   Returns the number of inversions in arr
 #   Runtime: O(n*log(n))
@@ -58,20 +60,20 @@ def mergeSort(arr, start = 0, end = None, sort = 'ascending'):
     if start == end:
         return 0
     mid = (start+end)/2
-    inversions = mergeSort(arr,start,mid)
-    inversions += mergeSort(arr, mid + 1, end)
-    inversions += merge(arr, start, mid, end)
+    inversions = mergeSort(arr,start,mid, key)
+    inversions += mergeSort(arr, mid + 1, end, key)
+    inversions += merge(arr, start, mid, end, key)
     
     return inversions
 
-def merge(arr, start, mid, end, sort = 'ascending'):
+def merge(arr, start, mid, end, sort = 'ascending', key = lambda x:x):
     a = [0 for i in range(start,end+1)]
     p1 = start
     p2 = mid+1
     inversions = 0
     k = 0
     while(p1<=mid and p2<=end):
-        if arr[p1]<=arr[p2]:
+        if key(arr[p1])<=key(arr[p2]):
             a[k] = arr[p1]
             k += 1
             p1 += 1
@@ -95,7 +97,7 @@ def merge(arr, start, mid, end, sort = 'ascending'):
     return inversions
 
 
-'''    
+  
 import random
 arr = [random.randint(0,10000000) for i in range(1000000)]
 quickSort(arr)
@@ -106,4 +108,3 @@ print 'Sorted an array of size 1000000'
 
 arr = [100-i for i in range(100)]
 print selection(arr, 20)
-'''
