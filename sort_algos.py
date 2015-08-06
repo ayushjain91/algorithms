@@ -25,11 +25,16 @@ def selection(arr, idx, lo = 0, hi = None):
     else:
         return selection(arr, idx, lo, i-1)
     
-def quickSort(arr, lo = 0, hi = None):
-#   Sorts the array arr in-place using quicksort
-#   Runtime: O(n*log(n)) on average
+def quickSort(arr, lo = 0, hi = None, order = 'ascending'):
     if hi == None:
         hi = len(arr) - 1
+    _quickSort(arr, lo, hi)
+    if order == 'descending':
+        arr.reverse()
+    
+def _quickSort(arr, lo = 0, hi = None):
+#   Sorts the array arr in-place using quicksort
+#   Runtime: O(n*log(n)) on average
     if hi<=lo:
         return
     r = random.randint(lo, hi)
@@ -41,8 +46,8 @@ def quickSort(arr, lo = 0, hi = None):
             arr[i], arr[j] = arr[j], arr[i]
             i += 1
     arr[lo], arr[i-1] = arr[i-1], arr[lo]
-    quickSort(arr, lo, i-2)
-    quickSort(arr, i, hi)
+    _quickSort(arr, lo, i-2)
+    _quickSort(arr, i, hi)
 
 def mergeSort(arr, start = 0, end = None, sort = 'ascending'):
 #   Sorts the array arr using mergesort - arr is modified
